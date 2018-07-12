@@ -7,6 +7,7 @@
 
 | Version | Description |
 |---------|-------------|
+| 1.0.3 | Fix memory issue |
 | 1.0.2 | Add changelog and update package.json |
 | 1.0.1 | Add new parameters and examples to readme |
 | 1.0.0 | Initial commit |

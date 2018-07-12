@@ -1,18 +1,18 @@
 {
   "name": "lightdiff",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Command line tool for comparing the average performance of two urls.",
   "main": "index.js",
   "bin": {
     "lightdiff": "./index.js"
   },
   "author": {
-      "name": "Drew McMillan",
-      "url": "https://drew.mx"
+    "name": "Drew McMillan",
+    "url": "https://drew.mx"
   },
   "homepage": "https://github.com/drewmcmillan/lightdiff",
   "bugs": {
-      "url": "https://github.com/drewmcmillan/lightdiff/issues"
+    "url": "https://github.com/drewmcmillan/lightdiff/issues"
   },
   "license": "MIT",
   "dependencies": {

@@ -9,6 +9,10 @@ const lighthouse = require('lighthouse'),
     packageJson = require('./package.json');
 
 var allResults = [[],[]];
+var config = {
+    instances: 5,
+    iterations: 5
+}
 
 function launchChromeAndRunLighthouse(url, config = null) {
     const opts = {chromeFlags: ['--headless']};
@@ -20,47 +24,50 @@ function launchChromeAndRunLighthouse(url, config = null) {
     });
 }
 
-const lighthouseQueue = queue((endpoint, callback) => {
-    launchChromeAndRunLighthouse(endpoint.url).then(function(results) {
-        allResults[endpoint.version].push(results);
-        callback()
-    });
-},  program.instances || 5)
-
 function toTitleCase(str) {
     return str.replace(/-/g, ' ').replace(/\w\S*/g, function(txt){
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
 }
 
-lighthouseQueue.drain = function() {
-    loadingSpinner.stop();
-
-    var table = [], arr = ['first-meaningful-paint', 'first-contentful-paint', 'speed-index', 'estimated-input-latency', 'time-to-first-byte', 
-    'first-cpu-idle', 'interactive', 'mainthread-work-breakdown', 'bootup-time', 'network-requests', 'total-byte-weight', 'unused-css-rules'];
-
-    arr.forEach( function(string) {
-        var before = Math.round(allResults[0].reduce((a,c) => (c['audits'][string]['rawValue'] + a), 0) / allResults[0].length);
-        var after = Math.round(allResults[1].reduce((a,c) => (c['audits'][string]['rawValue'] + a), 0) / allResults[0].length);
-        var difference = ((after - before) / after * 100).toFixed(2) + '%';
-        var tableData = {};
-
-        tableData["Metric"]                = toTitleCase(string);
-        tableData[program.one || 'Url 1']  = before;
-        tableData[program.two || 'Url 2']  = after;
-        tableData["Difference"]            = difference < 0 ? '+' + difference : difference;
-
-        table.push(tableData);
-    });
-
-    console.log('\n');
-    console.table(table);
-};
-
 function begin(url1, url2){
     loadingSpinner.start(100, { clearChar: true, doNotBlock: true });
 
-    for(var x = 0; x < program.number || 5; x++){
+    config.iterations = program.number || number;
+    config.instances = program.instances || instances;
+
+    const lighthouseQueue = queue((endpoint, callback) => {
+        launchChromeAndRunLighthouse(endpoint.url).then(function(results) {
+            allResults[endpoint.version].push(results);
+            callback()
+        });
+    }, config.instances)
+
+    lighthouseQueue.drain = function() {
+        loadingSpinner.stop();
+
+        var table = [], arr = ['first-meaningful-paint', 'first-contentful-paint', 'speed-index', 'estimated-input-latency', 'time-to-first-byte', 
+        'first-cpu-idle', 'interactive', 'mainthread-work-breakdown', 'bootup-time', 'network-requests', 'total-byte-weight', 'unused-css-rules'];
+
+        arr.forEach( function(string) {
+            var before = Math.round(allResults[0].reduce((a,c) => (c['audits'][string]['rawValue'] + a), 0) / allResults[0].length);
+            var after = Math.round(allResults[1].reduce((a,c) => (c['audits'][string]['rawValue'] + a), 0) / allResults[0].length);
+            var difference = ((after - before) / after * 100).toFixed(2);
+            var tableData = {};
+
+            tableData["Metric"]     = toTitleCase(string);
+            tableData['Url 1']      = before;
+            tableData['Url 2']      = after;
+            tableData["Difference"] = difference > 0 ? '+' + difference + '%' : difference + '%';
+
+            table.push(tableData);
+        });
+
+        console.log('\n');
+        console.table(table);
+    };
+
+    for(var x = 0; x < config.iterations; x++){
         lighthouseQueue.push({url: url1, version: 0})
         lighthouseQueue.push({url: url2, version: 1})
     }
