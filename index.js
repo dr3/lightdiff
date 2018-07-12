@@ -25,7 +25,7 @@ const lighthouseQueue = queue((endpoint, callback) => {
         allResults[endpoint.version].push(results);
         callback()
     });
-},  5)
+},  program.instances || 5)
 
 function toTitleCase(str) {
     return str.replace(/-/g, ' ').replace(/\w\S*/g, function(txt){
@@ -58,9 +58,9 @@ lighthouseQueue.drain = function() {
 };
 
 function begin(url1, url2){
-    loadingSpinner.start(100, { clearChar: true, hideCursor: true, doNotBlock: true });
+    loadingSpinner.start(100, { clearChar: true, doNotBlock: true });
 
-    for(var x = 0; x < 10; x++){
+    for(var x = 0; x < program.number || 5; x++){
         lighthouseQueue.push({url: url1, version: 0})
         lighthouseQueue.push({url: url2, version: 1})
     }
@@ -69,8 +69,9 @@ function begin(url1, url2){
 program
     .version(packageJson.version)
     .arguments('<url1> <url2>')
-    .option('-n, --number <number>', 'The number of times both URL\'s should be run in lighthouse')
+    .option('-n, --number <number>', 'The number of times both URL\'s should be run in lighthouse (default: 5)')
     .option('-o, --one <one>', 'The title of the first URL tested')
     .option('-t, --two <two>', 'The title of the second URL tested')
+    .option('-i, --instances <instances>', 'The number lighthouse instances used at once (default: 5)')
     .action(begin)
     .parse(process.argv);
