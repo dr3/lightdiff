@@ -11,13 +11,13 @@ Comparing the performance impact of a change can be tedious. Lighthouse reports 
 
 ## Useage
 
-```js
+```
 Usage: lightdiff [options] <url1> <url2>
 
   Options:
 
     -V, --version          output the version number
-    -n, --number <number>  The number of times both URL's should be run in lighthouse
+    -n, --number <number>  The number of times both URLs should be run in lighthouse
     -o, --one <one>        The title of the first URL tested
     -t, --two <two>        The title of the second URL tested
     -h, --help             output usage information
