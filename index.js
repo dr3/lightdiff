@@ -52,7 +52,7 @@ function begin(url1, url2){
         arr.forEach( function(string) {
             var before = Math.round(allResults[0].reduce((a,c) => (c['audits'][string]['rawValue'] + a), 0) / allResults[0].length);
             var after = Math.round(allResults[1].reduce((a,c) => (c['audits'][string]['rawValue'] + a), 0) / allResults[0].length);
-            var difference = ((after - before) / after * 100).toFixed(2);
+            var difference = -((before - after) / before * 100).toFixed(2);
             var tableData = {};
 
             tableData["Metric"]     = toTitleCase(string);
