@@ -1,6 +1,10 @@
 ---
-title: "[TANGO-1234] Title "
+name: "PR"
+about: "Request a feature"
+title: "feat: "
 ---
+
+Body of my template
 
 ## Ticket URL
 
