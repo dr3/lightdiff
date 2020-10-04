@@ -3,6 +3,9 @@
   "version": "1.0.4",
   "description": "Command line tool for comparing the average performance of two urls.",
   "main": "index.js",
+  "engines": {
+    "node": ">=8.9"
+  },
   "bin": {
     "lightdiff": "./index.js"
   },
@@ -21,7 +24,8 @@
     "commander": "^2.16.0",
     "console.table": "^0.10.0",
     "lighthouse": "^3.0.2",
-    "loading-spinner": "^1.2.0"
+    "loading-spinner": "^1.2.0",
+    "semver": "^5.5.0"
   },
   "keywords": [
     "compare",
